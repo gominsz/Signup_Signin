@@ -2,7 +2,7 @@ let btn = document.querySelector("#verSenha");
 let btnConfirm = document.querySelector("#verConfirmSenha");
 
 let nome = document.querySelector("#nome");
-let labelNome = document.querySelector("#labelNome");
+let labelName = document.querySelector("#labelNome");
 let validNome = false;
 
 let usuario = document.querySelector("#usuario");
@@ -78,16 +78,18 @@ confirmSenha.addEventListener("keyup", () => {
 
 function cadastrar() {
   if (validNome && validUsuario && validSenha && validConfirmSenha) {
-    let listaUser = JSON.parse(localStorage.getItem("listaUser") || "[]");
+    const existentUser = JSON.parse(localStorage.getItem("user"));
 
-    listaUser.push({
+    if (existentUser) throw new Error("User alred exists!");
+
+    const user = {
       nomeCad: nome.value,
       userCad: usuario.value,
       senhaCad: senha.value,
-    });
+      registredAt: new Date(),
+    };
 
-    localStorage.setItem("listaUser", JSON.stringify(listaUser));
-
+    localStorage.setItem("user", JSON.stringify(user));
     msgSuccess.setAttribute("style", "display: block");
     msgSuccess.innerHTML = "<strong>Cadastrando usuário...</strong>";
     msgError.setAttribute("style", "display: none");

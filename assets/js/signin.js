@@ -18,34 +18,46 @@ function entrar() {
   let senhaLabel = document.querySelector("#senhaLabel");
 
   let msgError = document.querySelector("#msgError");
-  let listaUser = [];
 
-  let userValid = {
+  let validUser = {
     nome: "",
     user: "",
     senha: "",
   };
 
-  listaUser = JSON.parse(localStorage.getItem("listaUser"));
+  user = JSON.parse(localStorage.getItem("user"));
 
-  listaUser.forEach((item) => {
-    if (usuario.value == item.userCad && senha.value == item.senhaCad) {
-      userValid = {
-        nome: item.nomeCad,
-        user: item.userCad,
-        senha: item.senhaCad,
-      };
-    }
-  });
+  if (!user) {
+    alert("Nenhum usuário encontrado, realize o cadastro");
+    return;
+  }
 
-  if (usuario.value == userValid.user && senha.value == userValid.senha) {
+  if (
+    new Date(user.registredAt).getMilliseconds() <
+    new Date().getMilliseconds() - 300000
+  ) {
+    console.log("login timeout");
+    localStorage.removeItem("user");
+    alert("Nenhum usuário encontrado, realize o cadastro");
+    return;
+  }
+
+  if (usuario.value == user.userCad && senha.value == user.senhaCad) {
+    validUser = {
+      nome: user.nomeCad,
+      user: user.userCad,
+      senha: user.senhaCad,
+    };
+  }
+
+  if (usuario.value == validUser.user && senha.value == validUser.senha) {
     window.location.href = "../../index.html";
 
     let mathRandom = Math.random().toString(16).substr(2);
     let token = mathRandom + mathRandom;
 
     localStorage.setItem("token", token);
-    localStorage.setItem("userLogado", JSON.stringify(userValid));
+    localStorage.setItem("userLogado", JSON.stringify(validUser));
   } else {
     userLabel.setAttribute("style", "color: red");
     usuario.setAttribute("style", "border-color: red");
